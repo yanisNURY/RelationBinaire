@@ -516,108 +516,191 @@ public class RelationBinaire {
          résultat : vrai ssi this est égale à r
          */
         public boolean estEgale(RelationBinaire r){
-            
+            if(this.estIncluse(r)&&r.estIncluse(this)){
+                return true;
+            }
+            else return false;
         }
 
 //        //______________________________________________
-//
-//
-//        // C) Théorie des graphes orientés
-//        //---------------------------------
-//
-//        /** pré-requis : 0 <= x < this.n
-//         résultat : l'ensemble des successeurs de x dans this, "indépendant"
-//         (c'est-à-dire dans une autre zône mémoire) de l'attribut this.tabSucc
-//
-//         */
-//        public EE succ(int x){
-//
-//        }
-//
+
+
+        // C) Théorie des graphes orientés
+        //---------------------------------
+
+        /** pré-requis : 0 <= x < this.n
+         résultat : l'ensemble des successeurs de x dans this, "indépendant"
+         (c'est-à-dire dans une autre zône mémoire) de l'attribut this.tabSucc
+
+         */
+        public EE succ(int x){
+            EE e = new EE(this.tabSucc[x]);
+            return e;
+        }
+
 //        //______________________________________________
-//
-//
-//        /** pré-requis : 0 <= x < this.n
-//         résultat : l'ensemble des prédécesseurs de x dans this
-//         */
-//        public EE pred(int x){
-//
-//        }
-//
+
+
+        /** pré-requis : 0 <= x < this.n
+         résultat : l'ensemble des prédécesseurs de x dans this
+         */
+        public EE pred(int x){
+            EE e =new EE(this.n);
+            for (int i=0;i<this.n;i++){
+                if(this.tabSucc[i].contient(x)){
+                    e.ajoutPratique(i);
+                }
+            }
+            return e;
+        }
+
 //        //______________________________________________
-//
-//
-//        // D) Relation binaire
-//        //---------------------
-//
-//        /** pré-requis : aucun
-//         résultat : vrai ssi this est réflexive
-//         */
-//        public boolean estReflexive(){
-//
-//        }
-//
+
+
+        // D) Relation binaire
+        //---------------------
+
+        /** pré-requis : aucun
+         résultat : vrai ssi this est réflexive
+         */
+        public boolean estReflexive(){
+            int i=0;
+            while(this.succ(i).contient(i) && i<this.n-1){
+                i++;
+            }
+            if (i!=this.n-1 || !this.succ(i).contient(i))
+                return false;
+            else return true;
+        }
+
 //        //______________________________________________
-//
-//
-//        /** pré-requis : aucun
-//         résultat : vrai ssi this est antiréflexive
-//         */
-//        public boolean estAntireflexive(){
-//
-//        }
-//
+
+
+        /** pré-requis : aucun
+         résultat : vrai ssi this est antiréflexive
+         */
+        public boolean estAntireflexive(){
+            int i=0;
+            while(!this.succ(i).contient(i) && i<this.n-1){
+                i++;
+            }
+            if (i!=this.n-1 || this.succ(i).contient(i))
+                return false;
+            else return true;
+
+        }
+
 //        //______________________________________________
-//
-//
-//        /** pré-requis : aucun
-//         résultat : vrai ssi this est symétrique
-//         */
-//        public boolean estSymetrique(){
-//
-//        }
-//
+
+
+        /** pré-requis : aucun
+         résultat : vrai ssi this est symétrique
+         */
+        public boolean estSymetrique(){
+            boolean e[][]=transposee(this.matAdj);
+            int j=0;
+            int i=0;
+            boolean symétrique=true;
+            while (i<this.n-1 && symétrique){
+                while (j<this.n-1 && symétrique) {
+                    if (e[i][j] !=this.matAdj[i][j]) {
+                        symétrique = false;
+                    }
+                    j++;
+                }
+                i++;
+            }
+            return symétrique;
+        }
+
 //        //______________________________________________
-//
-//
-//        /** pré-requis : aucun
-//         résultat : vrai ssi this est antisymétrique
-//         */
-//        public boolean estAntisymetrique(){
-//
-//        }
-//
+
+
+        /** pré-requis : aucun
+         résultat : vrai ssi this est antisymétrique
+         */
+        public boolean estAntisymetrique(){
+            boolean e[][]=transposee(this.matAdj);
+            int j=0;
+            int i=0;
+            boolean antisymétrique=true;
+            while (i<this.n-1 && antisymétrique){
+                while (j<this.n-1 && antisymétrique) {
+                    if (e[i][j] ==this.matAdj[i][j]) {
+                        antisymétrique = false;
+                    }
+                    j++;
+                }
+                i++;
+            }
+            return antisymétrique;
+        }
+
 //        //______________________________________________
-//
-//
-//        /** pré-requis : aucun
-//         résultat : vrai ssi this est transitive
-//         */
-//        public boolean estTransitive(){
-//
-//        }
-//
+
+
+        /** pré-requis : aucun
+         résultat : vrai ssi this est transitive
+         */
+        public boolean estTransitive(){
+            boolean e=true;
+            int i=0,j=0;
+            while (e && i<this.n-1){
+                while (e && j<this.n-1){
+                    if(matAdj[i][j]){
+                        for (int k=0;k<this.n;k++){
+                            if (matAdj[j][k]){
+                                System.out.println(k+" :");
+                                System.out.println(pred(k));
+                                if(!pred(k).contient(i)){
+                                    e=false;
+                                    System.out.println(i+" "+j);
+                                }
+                            }
+                        }
+                    }
+                j++;
+                }
+            i++;
+            }
+            return e;
+        }
+
 //        //______________________________________________
-//
-//
-//        /** pré-requis : aucun
-//         résultat : vrai ssi this est une relation d'ordre
-//         */
-//        public boolean estRelOrdre(){
-//
-//        }
-//
+
+
+        /** pré-requis : aucun
+         résultat : vrai ssi this est une relation d'ordre
+         */
+        public boolean estRelOrdre(){
+            if(this.estReflexive()&&this.estAntisymetrique()&&this.estTransitive())
+                return true;
+            else return false;
+        }
+
 //        //______________________________________________
-//
-//
-//
-//        /** pré-requis : aucun
-//         résultat : la relation binaire assiciée au diagramme de Hasse de this
-//         */
+
+
+
+        /** pré-requis : aucun
+         résultat : la relation binaire assiciée au diagramme de Hasse de this
+         */
 //        public RelationBinaire hasse(){
+//            for (int i=0;i<this.n;i++){
+//                for (int j=0;j<this.n;j++){
+//                    if(matAdj[i][j]){
+//                        for (int k=0;k<this.n;k++){
+//                            if (matAdj[j][k]){
+//                                if(tabSucc[k].contient(i)){
 //
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 //        }
-//
+
 //        //______________________________________________
 //
 //        /** pré-requis : aucun

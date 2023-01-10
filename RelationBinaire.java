@@ -127,10 +127,12 @@ public class RelationBinaire {
         this.matAdj=copieMat(mat);
         this.tabSucc=new EE[mat.length];
         int card=0;
+        for (int i=0;i<this.n;i++){
+            this.tabSucc[i]=new EE(mat.length);
+        }
         for (int i=0;i< mat.length;i++){
             for (int j=0;j< mat.length;j++){
                 if(mat[i][j]) {
-                    this.tabSucc[i]=new EE(mat.length);
                     this.tabSucc[i].ajoutElt(j);
                     card++;
                 }
@@ -375,6 +377,7 @@ public class RelationBinaire {
         if (!this.matAdj[x][y]){
             this.matAdj[x][y]=true;
         }
+        this.tabSucc[x].ajoutElt(y);
         this.m++;
     }
 
@@ -573,11 +576,13 @@ public class RelationBinaire {
          */
         public boolean estReflexive(){
             int i=0;
-            while(this.succ(i).contient(i) && i<this.n-1){
+            while(this.tabSucc[i].contient(i) && i<this.n-1){
                 i++;
+
             }
-            if (i!=this.n-1 || !this.succ(i).contient(i))
+            if (i!=this.n-1 || !this.succ(i).contient(i)) {
                 return false;
+            }
             else return true;
         }
 
@@ -680,7 +685,7 @@ public class RelationBinaire {
          résultat : vrai ssi this est une relation d'ordre
          */
         public boolean estRelOrdre(){
-            if(this.estAntireflexive()&&this.estAntisymetrique()&&this.estTransitive())
+            if(this.estReflexive()&&this.estAntisymetrique()&&this.estTransitive())
                 return true;
             else return false;
         }

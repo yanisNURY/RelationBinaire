@@ -27,14 +27,23 @@ public class MainRelationBinaire {
             System.out.println("}");
         }
     }
-    public static void main(String [] args){
-        RelationBinaire R=new RelationBinaire(4,0.2);
-        afficher(R.matAdj);
-        for(int i=0;i<4;i++){
-            System.out.println(i);
-            System.out.println(R.tabSucc[i]);
+    public static void main(String [] args) {
+        boolean [][]m1={{true,false,false},{false,true,false},{true,false,true}};
+        boolean [][]m2={{true,true,true},{false,true,false},{true,true,true}};
+        RelationBinaire R = new RelationBinaire(4,0.55);;
 
-        }
-        System.out.println(R.m);
+//        while (!R.estRelOrdre()) {
+//            R = new RelationBinaire(4, 0.8);
+//            System.out.println(R);
+//            for (int i = 0; i < 3; i++) {
+//                System.out.println(i + ":");
+//                System.out.println(R.tabSucc[i]);
+//            }
+//
+//            System.out.println(R.estRelOrdre());
+//        }
+//        System.out.println(R.hasse());
+        R.afficheDivers();
+
     }
 }

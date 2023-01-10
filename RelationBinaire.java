@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.*;
 import java.lang.*;
 public class RelationBinaire {
@@ -195,6 +196,7 @@ public class RelationBinaire {
      */
     public String toString(){
         String s="";
+        s+="\n Matrice d'adjacence :\n";
         for(int i=0;i<this.n;i++){
             for(int j=0;j<this.n;j++){
                 if (this.matAdj[i][j]){
@@ -206,6 +208,7 @@ public class RelationBinaire {
             s+="\n\n";
         }
         s+="\n----------------\n";
+        s+="\n ensemble des couples :\n";
         s+="{";
         for (int i=0;i<this.n;i++){
             for(int j=0;j<this.n;j++){
@@ -547,7 +550,7 @@ public class RelationBinaire {
         public EE pred(int x){
             EE e =new EE(this.n);
             for (int i=0;i<this.n;i++){
-                if(this.tabSucc[i].contient(x)){
+                if(this.matAdj[i][x]){
                     e.ajoutPratique(i);
                 }
             }
@@ -601,14 +604,15 @@ public class RelationBinaire {
             int j=0;
             int i=0;
             boolean symétrique=true;
-            while (i<this.n-1 && symétrique){
-                while (j<this.n-1 && symétrique) {
+            while (i<this.n && symétrique){
+                while (j<this.n && symétrique) {
                     if (e[i][j] !=this.matAdj[i][j]) {
                         symétrique = false;
                     }
                     j++;
                 }
                 i++;
+                j=0;
             }
             return symétrique;
         }
@@ -620,18 +624,18 @@ public class RelationBinaire {
          résultat : vrai ssi this est antisymétrique
          */
         public boolean estAntisymetrique(){
-            boolean e[][]=transposee(this.matAdj);
             int j=0;
             int i=0;
             boolean antisymétrique=true;
-            while (i<this.n-1 && antisymétrique){
-                while (j<this.n-1 && antisymétrique) {
-                    if (e[i][j] ==this.matAdj[i][j]) {
+            while (i<this.n && antisymétrique){
+                while (j<this.n && antisymétrique) {
+                    if (this.matAdj[j][i]==this.matAdj[i][j] && i!=j) {
                         antisymétrique = false;
                     }
                     j++;
                 }
                 i++;
+                j=0;
             }
             return antisymétrique;
         }
@@ -645,23 +649,21 @@ public class RelationBinaire {
         public boolean estTransitive(){
             boolean e=true;
             int i=0,j=0;
-            while (e && i<this.n-1){
-                while (e && j<this.n-1){
+            while (e && i<this.n){
+                while (e && j<this.n){
                     if(matAdj[i][j]){
                         for (int k=0;k<this.n;k++){
                             if (matAdj[j][k]){
-                                System.out.println(k+" :");
-                                System.out.println(pred(k));
                                 if(!pred(k).contient(i)){
                                     e=false;
-                                    System.out.println(i+" "+j);
                                 }
                             }
                         }
                     }
                 j++;
                 }
-            i++;
+                i++;
+                j=0;
             }
             return e;
         }
@@ -673,7 +675,7 @@ public class RelationBinaire {
          résultat : vrai ssi this est une relation d'ordre
          */
         public boolean estRelOrdre(){
-            if(this.estReflexive()&&this.estAntisymetrique()&&this.estTransitive())
+            if(this.estAntireflexive()&&this.estAntisymetrique()&&this.estTransitive())
                 return true;
             else return false;
         }
@@ -685,40 +687,90 @@ public class RelationBinaire {
         /** pré-requis : aucun
          résultat : la relation binaire assiciée au diagramme de Hasse de this
          */
-//        public RelationBinaire hasse(){
-//            for (int i=0;i<this.n;i++){
-//                for (int j=0;j<this.n;j++){
-//                    if(matAdj[i][j]){
-//                        for (int k=0;k<this.n;k++){
-//                            if (matAdj[j][k]){
-//                                if(tabSucc[k].contient(i)){
-//
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        public RelationBinaire hasse(){
+            RelationBinaire H=new RelationBinaire(this);
+            if(!H.estAntireflexive()){
+                for (int i=0;i<this.n;i++){
+                    matAdj[i][i]=false;
+                }
+            }
+            for (int i=0;i<this.n;i++){
+                for (int j=0;j<this.n;j++){
+                    if(H.matAdj[i][j]){
+                        for (int k=0;k<this.n;k++){
+                            if (H.matAdj[i][k]){
+                                if(tabSucc[k].contient(j)){
+                                    H.matAdj[i][j]=false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return H;
+        }
 
 //        //______________________________________________
-//
-//        /** pré-requis : aucun
-//         résultat : la fermeture transitive de this
-//         */
-//        public RelationBinaire ferTrans(){
-//
-//        }
-//
+
+        /** pré-requis : aucun
+         résultat : la fermeture transitive de this
+         */
+        public RelationBinaire ferTrans(){
+            RelationBinaire F=new RelationBinaire(this);
+                for (int i = 0; i < this.n; i++) {
+                    for (int j = 0; j < this.n; j++) {
+                        if (!this.estTransitive()) {
+                            if (!F.matAdj[i][j]) {
+                                for (int k = 0; k < this.n; k++) {
+                                    if (F.matAdj[i][k]) {
+                                        if (tabSucc[k].contient(j)) {
+                                            F.matAdj[i][j] = true;
+                                            i=0;
+                                            j=0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            return F;
+        }
+
 //        //______________________________________________
-//
-//        /** pré-requis : aucun
-//         action : affiche this sous 2 formes (matrice et ensemble de couples), puis affiche ses propriétés
-//         (réflexive, ..., relation d'ordre) et les relations binaires suivantes obtenues à partir de this :
-//         Hasse, fermeture transitive de Hasse et fermeture transitive de Hasse avec boucles (sous 2 formes aussi)
-//         */
-//        public void afficheDivers(){
-//
+
+        /** pré-requis : aucun
+         action : affiche this sous 2 formes (matrice et ensemble de couples), puis affiche ses propriétés
+         (réflexive, ..., relation d'ordre) et les relations binaires suivantes obtenues à partir de this :
+         Hasse, fermeture transitive de Hasse et fermeture transitive de Hasse avec boucles (sous 2 formes aussi)
+         */
+        public void afficheDivers(){
+            System.out.println(this);
+            System.out.println("La R.B est :");
+            if(this.estReflexive()){
+                System.out.println("- réflexive");
+            }
+            if(this.estAntireflexive()){
+                System.out.println("- antiréflexive");
+            }
+            if(this.estSymetrique()){
+                System.out.println("- Symétrique");
+            }
+            if(this.estAntisymetrique()){
+                System.out.println("- réflexive");
+            }
+            if(this.estTransitive()){
+                System.out.println("- transitive");
+            }
+            if(this.estRelOrdre()){
+                System.out.println("- Une relation d'ordre");
+            }
+            System.out.println("----------------Hasse : --------------");
+            System.out.println(this.hasse());
+            System.out.println("--------------fermeture transitive de Hasse--------------- :");
+            System.out.println(this.hasse().ferTrans());
+        }
+
         }
 
         //______________________________________________

@@ -30,6 +30,9 @@ public class RelationBinaire {
         this.matAdj=new boolean[nb][nb];
         this.m=0;
         this.tabSucc=new EE[nb];
+        for (int i=0;i<this.n;i++){
+            this.tabSucc[i]=new EE(nb);
+        }
     }
 
     //______________________________________________

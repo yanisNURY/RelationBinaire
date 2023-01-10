@@ -203,9 +203,9 @@ public class RelationBinaire {
                     s+='1';
                 }
                 else s+='0';
-                s+="\t";
+                s+=" ";
             }
-            s+="\n\n";
+            s+="\n";
         }
         s+="\n----------------\n";
         s+="\n ensemble des couples :\n";

@@ -372,6 +372,7 @@ public class RelationBinaire {
         if (!this.matAdj[x][y]){
             this.matAdj[x][y]=true;
         }
+        this.m++;
     }
 
 //    //______________________________________________
@@ -384,6 +385,7 @@ public class RelationBinaire {
         if (this.matAdj[x][y]){
             this.matAdj[x][y]=false;
         }
+        this.m--;
     }
 
 //    //______________________________________________
@@ -691,20 +693,34 @@ public class RelationBinaire {
             RelationBinaire H=new RelationBinaire(this);
             if(!H.estAntireflexive()){
                 for (int i=0;i<this.n;i++){
-                    matAdj[i][i]=false;
+                    H.matAdj[i][i]=false;
                 }
             }
-            for (int i=0;i<this.n;i++){
-                for (int j=0;j<this.n;j++){
-                    if(H.matAdj[i][j]){
-                        for (int k=0;k<this.n;k++){
-                            if (H.matAdj[i][k]){
-                                if(tabSucc[k].contient(j)){
-                                    H.matAdj[i][j]=false;
+//            for (int i=0;i<this.n;i++){
+//                for (int j=0;j<this.n;j++){
+//                    if(H.matAdj[i][j]){
+//                        for (int k=0;k<this.n;k++){
+//                            if (H.matAdj[i][k]){
+//                                if(tabSucc[k].contient(j)){
+//                                    H.matAdj[i][j]=false;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+            for (int elementCOURANT =0;elementCOURANT<H.n;elementCOURANT++){
+                for (int i=0;i< H.n;i++){
+                    if (H.matAdj[i][elementCOURANT]) {
+                        for (int j=0;j<H.n;j++){
+                            if (H.matAdj[elementCOURANT][j]){
+                                if(H.matAdj[i][j]){
+                                    H.enleveCouple(i,j);
                                 }
                             }
                         }
                     }
+
                 }
             }
             return H;

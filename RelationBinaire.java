@@ -11,7 +11,7 @@ public class RelationBinaire {
     public EE[] tabSucc;    // tableau des ensembles de successeurs
 
     // outils
-    public static boolean [][] copieMat (boolean t [][]){
+    private static boolean [][] copieMat (boolean t [][]){
         boolean[][]tCop=new boolean[t.length][t[0].length];
         for(int i=0;i<t.length;i++){
             for (int j=0;j<t[0].length;j++){
@@ -494,7 +494,7 @@ public class RelationBinaire {
             boolean [][] m=new boolean[this.n][this.n];
             for (int i=0;i<this.n;i++){
                 for (int j=0;j<this.n;j++){
-                    if(this.matAdj[i][j]!=r.matAdj[i][j])
+                    if(this.matAdj[i][j]&&!r.matAdj[i][j])
                         m[i][j]=true;
                 }
             }
@@ -578,7 +578,6 @@ public class RelationBinaire {
             int i=0;
             while(this.tabSucc[i].contient(i) && i<this.n-1){
                 i++;
-
             }
             if (i!=this.n-1 || !this.succ(i).contient(i)) {
                 return false;
@@ -701,22 +700,9 @@ public class RelationBinaire {
             RelationBinaire H=new RelationBinaire(this);
             if(!H.estAntireflexive()){
                 for (int i=0;i<this.n;i++){
-                    H.matAdj[i][i]=false;
+                    H.enleveCouple(i,i);
                 }
             }
-//            for (int i=0;i<this.n;i++){
-//                for (int j=0;j<this.n;j++){
-//                    if(H.matAdj[i][j]){
-//                        for (int k=0;k<this.n;k++){
-//                            if (H.matAdj[i][k]){
-//                                if(tabSucc[k].contient(j)){
-//                                    H.matAdj[i][j]=false;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
             for (int elementCOURANT =0;elementCOURANT<H.n;elementCOURANT++){
                 for (int i=0;i< H.n;i++){
                     if (H.matAdj[i][elementCOURANT]) {
@@ -749,6 +735,7 @@ public class RelationBinaire {
                                     if (F.matAdj[i][k]) {
                                         if (tabSucc[k].contient(j)) {
                                             F.matAdj[i][j] = true;
+                                            F.m++;
                                             i=0;
                                             j=0;
                                         }
